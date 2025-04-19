@@ -1,0 +1,21 @@
+{
+    "name": "autodba-webview",
+    "displayName": "AutoDBA Webview",
+    "description": "A VS Code extension for database automation",
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "watch": "vite build --watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^5.0.3",
+        "eslint": "^9.25.0",
+        "svelte": "^5.28.1",
+        "vite": "^6.3.2"
+    }
+}

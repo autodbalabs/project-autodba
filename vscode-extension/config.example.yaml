@@ -1,0 +1,13 @@
+# AutoDBA Extension Configuration Example
+# Copy this file to config.yaml and modify as needed
+
+models:
+  - name: gpt-4o
+    temperature: 0.7
+    max_tokens: 2000
+
+extension:
+  debug_mode: false
+  log_level: info
+  auto_refresh: true
+  refresh_interval: 30

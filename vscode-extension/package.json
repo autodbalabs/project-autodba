@@ -1,0 +1,69 @@
+{
+  "name": "autodba-postgresql-insights",
+  "displayName": "AutoDBA: PostgreSQL Insights",
+  "description": "A VS Code extension for PostgreSQL database automation and insights",
+  "version": "0.1.0",
+  "publisher": "autodba-labs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/generalpiston/autodba"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Linters",
+    "Programming Languages",
+    "Data Science"
+  ],
+  "keywords": [
+    "postgresql",
+    "postgres",
+    "sql",
+    "rdbms",
+    "query-performance",
+    "slow-queries",
+    "auto-index",
+    "database-tuning",
+    "sql-optimizer",
+    "explain-analyze",
+    "pg-stat-statements",
+    "index-recommendations",
+    "developer-tools",
+    "vscode-extension",
+    "infra-tools"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "autodba-postgresql-insights.main",
+        "title": "AutoDBA PostgreSQL Insights"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "pushd webview ; bun run build ; popd",
+    "watch": "pushd webview ; bun run watch ; popd",
+    "pretest": "npm run build && npm run lint",
+    "lint": "eslint src --ext js",
+    "test": "node ./dist/test/runTest.js",
+    "package": "vsce package --baseContentUrl=./vscode-extension"
+  },
+  "author": "Abraham Elmahrek",
+  "license": "Proprietary",
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "lowdb": "^7.0.1",
+    "pg": "^8.14.1"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.3.2",
+    "eslint": "^9.25.0"
+  }
+}

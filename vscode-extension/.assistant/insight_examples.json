@@ -1,0 +1,78 @@
+{
+  "validation_error": {
+    "kind": "missing-extension",
+    "severity_level": 5,
+    "location": "database",
+    "resolution": "CREATE EXTENSION IF NOT EXISTS pg_stat_statements;",
+    "title": "pg_stat_statements Extension Missing",
+    "context": {
+      "extension": "pg_stat_statements",
+      "status": "missing",
+      "impact": "critical",
+      "description": "The pg_stat_statements extension is not enabled. This extension is required for query performance analysis."
+    }
+  },
+  "unused_index": {
+    "kind": "unused-index",
+    "severity_level": 3,
+    "location": "public.customers.idx_customers_email",
+    "resolution": "DROP INDEX IF EXISTS \"public\".\"idx_customers_email\";",
+    "title": "Unused Index Detected",
+    "context": {
+      "schema": "public",
+      "table": "customers",
+      "index": "idx_customers_email",
+      "index_definition": "CREATE INDEX idx_customers_email ON public.customers USING btree (email)",
+      "index_size": "8192",
+      "impact": "moderate",
+      "description": "Index idx_customers_email on public.customers is unused"
+    }
+  },
+  "redundant_index": {
+    "kind": "redundant-index",
+    "severity_level": 2,
+    "location": "public.transactions.idx_transactions_customer_id",
+    "resolution": "DROP INDEX IF EXISTS \"public\".\"idx_transactions_customer_id\";",
+    "title": "Redundant Index Detected",
+    "context": {
+      "schema": "public",
+      "table": "transactions",
+      "redundant_index": "idx_transactions_customer_id",
+      "covering_index": "idx_transactions_customer_id_status",
+      "impact": "low",
+      "description": "Index idx_transactions_customer_id is redundant with idx_transactions_customer_id_status"
+    }
+  },
+  "config_optimization": {
+    "kind": "config-optimization",
+    "severity_level": 3,
+    "location": "shared_buffers",
+    "resolution": "ALTER SYSTEM SET shared_buffers = '4096MB';",
+    "title": "Shared Buffers Configuration",
+    "context": {
+      "parameter": "shared_buffers",
+      "current_value": 1024,
+      "suggested_value": 4096,
+      "impact": "moderate",
+      "rationale": "Shared buffers are used for caching data. Increasing this can improve read performance."
+    }
+  },
+  "slow_query": {
+    "kind": "slow-query",
+    "severity_level": 4,
+    "location": "public.customers, public.transactions",
+    "resolution": null,
+    "title": "Slow Query Detected",
+    "context": {
+      "query": "SELECT c.*, t.* FROM customers c JOIN transactions t ON c.id = t.customer_id WHERE c.status = 'active'",
+      "calls": 1000,
+      "total_time": 5000,
+      "mean_time": 5,
+      "rows": 50000,
+      "shared_blks_hit": 1000,
+      "shared_blks_read": 500,
+      "impact": "high",
+      "description": "Query takes 5.00ms on average (1000 calls)\nConsider adding or optimizing indexes to reduce sequential scans\nQuery returns a large number of rows. Consider adding LIMIT or optimizing the WHERE clause"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+out
+node_modules
+.DS_Store
+.vscode-test
+*.vsix
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+!.vscode/extensions.json 
+dist
+media
+
+# Config files
+config.yaml
+config.yml
+*.config.yaml
+*.config.yml
+!config.example.yaml

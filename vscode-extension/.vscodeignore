@@ -1,0 +1,41 @@
+# Ignore node modules not needed at runtime
+**/node_modules/**/test/**
+**/node_modules/**/docs/**
+**/node_modules/**/examples/**
+**/node_modules/.bin/**
+
+# Build output if not needed
+out/test/**
+test/**
+
+# Git-related
+.git/**
+.gitignore
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+
+# npm/yarn/pnpm related
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lock
+
+# Miscellaneous
+.assistant
+.vscode/**
+.vscode-test/**
+.yarnrc
+**/tsconfig.json
+**/.eslintrc.json
+**/*.map
+**/*.ts
+.vscodeignore
+vsc-extension-quickstart.md
+
+# AutoDBA
+webview/**
+!webview/dist
+CONTRIBUTING.md
+config.example.yaml

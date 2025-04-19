@@ -1,0 +1,166 @@
+:root {
+  --primary-blue: #4a6baf;
+  --primary-blue-dark: #3a5a9f;
+  --dark-bg: var(--vscode-editor-background, #1e1e1e);
+  --dark-bg-alt: var(--vscode-sideBar-background, #252526);
+  --dark-border: var(--vscode-panel-border, #3c3c3c);
+  --text-light: var(--vscode-editor-foreground, #d4d4d4);
+  --text-placeholder: var(--vscode-input-placeholderForeground, #7d7d7d);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --error-red: var(--vscode-errorForeground, #f48771);
+  --error-red-dark: #c0392b;
+  --success-green: var(--vscode-testing-iconPassed, #73c991);
+  --warning-yellow: var(--vscode-warningForeground, #cca700);
+}
+
+body {
+  font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif);
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: var(--text-light);
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+button:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--dark-border);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+  background-color: var(--dark-bg-alt);
+}
+
+input::placeholder {
+  color: var(--text-placeholder);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px var(--shadow-color);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-light);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Common card styles */
+.card {
+  background: var(--dark-bg-alt);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  border: 1px solid var(--dark-border);
+}
+
+/* Common state message styles */
+.state-message {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-light);
+}
+
+.error-message {
+  color: var(--error-red);
+}
+
+.success-message {
+  color: var(--success-green);
+}
+
+.warning-message {
+  color: var(--warning-yellow);
+}
+
+/* Common list styles */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid var(--dark-border);
+  border-radius: 6px;
+  background: var(--dark-bg);
+}
+
+/* Common action button styles */
+.action-button {
+  padding: 5px 10px;
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.action-button:hover {
+  background-color: var(--vscode-button-hoverBackground);
+}
+
+/* Common empty state styles */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 20px;
+  color: var(--text-light);
+}
+
+/* Common loading state styles */
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-light);
+} 
