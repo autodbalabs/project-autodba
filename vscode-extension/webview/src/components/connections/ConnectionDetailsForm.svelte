@@ -76,7 +76,7 @@
 <form class="connection-details-form" on:submit={handleSubmit}>
   <div class="connection-note">
     <p>Currently only TCP-based PostgreSQL connections are supported. Support for more databases and local socket connections will be added in a future update.</p>
-    <p>For more information, refer to the <a href="https://github.com/generalpiston/autodba/blob/main/README.md" target="_blank">README</a>.</p>
+    <p>For more information, refer to the <a href="https://marketplace.visualstudio.com/items?itemName=autodba-labs.autodba-postgresql-insights" target="_blank">README</a>.</p>
   </div>
 
   <div class="form-group">

@@ -113,3 +113,49 @@ Key files:
 - VSCode (v1.60.0 or higher)
 - PostgreSQL (v14 or higher)
 - Bun (latest version) 
+
+## Publishing to VS Code Marketplace
+
+1. Install vsce (Visual Studio Code Extensions) tool:
+   ```bash
+   bun add -D @vscode/vsce
+   ```
+
+2. Update `package.json` with your publisher information:
+   ```json
+   {
+     "name": "autodba",
+     "displayName": "AutoDBA",
+     "publisher": "autodba-labs",
+     "version": "0.0.1"
+   }
+   ```
+
+3. Create a Personal Access Token (PAT):
+   - Go to https://dev.azure.com/autodba-labs/_usersSettings/tokens
+   - Click "New Token"
+   - Give it a name and select "Marketplace > Manage" scope
+   - Copy the token value
+
+4. Login with your PAT:
+   ```bash
+   bunx vsce login autodba-labs
+   ```
+
+5. Package and publish:
+   ```bash
+   bun run package
+   bun run publish:preview
+   ```
+
+   and one of...
+
+   For patch/minor/major version updates, use:
+   ```bash
+   bun run publish:patch  # 0.0.1 -> 0.0.2
+   bun run publish:minor  # 0.0.1 -> 0.1.0
+   bun run publish:major  # 0.0.1 -> 1.0.0
+   ```
+
+6. Verify your extension is published at:
+   https://marketplace.visualstudio.com/items?itemName=autodba-labs.autodba
