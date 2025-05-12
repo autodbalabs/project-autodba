@@ -2,12 +2,12 @@
   "name": "autodba-postgresql-insights",
   "displayName": "AutoDBA: PostgreSQL Insights",
   "description": "A VS Code extension for PostgreSQL database automation and insights",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publisher": "autodba-labs",
   "icon": "media/AutoDBA-Avatar-128x128.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/autodba-labs/project-autodba"
+    "url": "https://github.com/autodbalabs/project-autodba"
   },
   "engines": {
     "vscode": "^1.80.0"
