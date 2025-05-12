@@ -7,7 +7,7 @@
   "icon": "media/AutoDBA-Avatar-128x128.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/autodba-labs/project-autodba"
+    "url": "https://github.com/autodbalabs/project-autodba"
   },
   "engines": {
     "vscode": "^1.80.0"
