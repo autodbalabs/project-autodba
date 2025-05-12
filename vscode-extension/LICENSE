@@ -1,16 +1,16 @@
 # Software License Agreement
 
 **Software:** AutoDBA PostgreSQL Insights
-**Author:** Abraham Elmahrek
+**Author:** AutoDBA Labs
 **Effective Date:** May 11, 2025
 
-Copyright © 2025 Abraham Elmahrek. All rights reserved.
+Copyright © 2025 AutoDBA Labs. All rights reserved.
 
 You are granted a non-exclusive, non-transferable, revocable license to install and use the AutoDBA PostgreSQL Insights extension (“Software”) solely through and within the Visual Studio Code Marketplace environment, in accordance with this License Agreement.
 
 You may **not**, under any circumstances: reverse engineer, decompile, disassemble, or attempt to derive the source code of the Software; modify, adapt, translate, or create derivative works based on the Software; reproduce, redistribute, sublicense, rent, lease, or lend the Software outside of the Visual Studio Code Marketplace; use the Software in any manner that violates applicable laws or regulations; or use the Software for any commercial purpose without prior written consent from the Author.
 
-All rights, title, and interest in and to the Software, including but not limited to all copyrights, trademarks, and trade secrets, are and shall remain the exclusive property of Abraham Elmahrek. This License does not grant you any ownership rights in the Software.
+All rights, title, and interest in and to the Software, including but not limited to all copyrights, trademarks, and trade secrets, are and shall remain the exclusive property of AutoDBA Labs. This License does not grant you any ownership rights in the Software.
 
 The Software may collect non-personally identifiable usage data to help improve functionality, performance, and user experience. By using the Software, you consent to such data collection and usage. No personal or sensitive information is intentionally collected. Refer to the [Privacy Policy](PRIVACY.md) for further details.
 
@@ -20,6 +20,6 @@ THE SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND, EXPRESS O
 
 IN NO EVENT SHALL ABRAHAM ELMAHREK BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES WHATSOEVER, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
-Abraham Elmahrek reserves the right to modify or replace this License Agreement at any time. Continued use of the Software after any such changes constitutes your acceptance of the new terms.
+AutoDBA Labs reserves the right to modify or replace this License Agreement at any time. Continued use of the Software after any such changes constitutes your acceptance of the new terms.
 
 This License shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law principles.

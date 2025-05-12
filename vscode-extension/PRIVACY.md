@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **Software:** AutoDBA PostgreSQL Insights  
-**Author:** Abraham Elmahrek  
+**Author:** AutoDBA Labs  
 **Effective Date:** May 11, 2025
 
 ---
