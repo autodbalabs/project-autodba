@@ -30,7 +30,7 @@ class PostgresManager extends DatabaseManager {
       host: connectionDetails.host,
       port: connectionDetails.port,
       database: connectionDetails.dbname,
-      username: connectionDetails.username,
+      user: connectionDetails.username,
       password: connectionDetails.password
     };
   }
