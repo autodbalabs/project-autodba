@@ -45,6 +45,15 @@ class Router {
     });
   }
 
+  onRouteChanged(callback) {
+    return this.store.subscribe(value => {
+      callback({
+        path: value,
+        fullPath: this.join(value)
+      });
+    });
+  }
+
   scope(prefix) {
     const normalizedPrefix = this.join(prefix);
     const currentPath = this.fullpath();

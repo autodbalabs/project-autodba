@@ -65,7 +65,8 @@
   "dependencies": {
     "js-yaml": "^4.1.0",
     "lowdb": "^7.0.1",
-    "pg": "^8.14.1"
+    "pg": "^8.14.1",
+    "posthog-node": "^4.17.1"
   },
   "devDependencies": {
     "@vscode/vsce": "^3.3.2",

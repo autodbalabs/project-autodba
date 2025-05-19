@@ -1,4 +1,5 @@
 <script>
+  import posthog from 'posthog-js'
   import { onMount } from 'svelte';
   import router from '~/lib/router';
   import ConnectionsRouter from './pages/connections/index.svelte';
@@ -7,7 +8,21 @@
   let selectedConnection = null;
 
   onMount(() => {
+    if (typeof window !== 'undefined') {
+      posthog.init(
+        'phc_vLseNAgoHJmcJ91o4rILkZ5zN7FlP8bup42r2keIPQh',
+        {
+          api_host: 'https://us.i.posthog.com',
+          person_profiles: 'always',
+        }
+      )
+    }
+
     router.navigate('connections/list');
+    router.onRouteChanged(({ path, fullPath }) => {
+      console.log('Navigating to', path, fullPath);
+      posthog.capture('page_view', { page: path });
+    });
   });
 
   function showInsights(connection) {

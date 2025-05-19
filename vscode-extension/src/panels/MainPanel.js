@@ -116,7 +116,13 @@ class MainPanel {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+          <meta http-equiv="Content-Security-Policy" content="
+            default-src 'none';
+            script-src 'nonce-${nonce}';
+            connect-src https://us.i.posthog.com https://us-assets.i.posthog.com;
+            style-src ${webview.cspSource};
+            img-src data:;
+          ">
           <link rel="stylesheet" href="${stylesUri}">
           <script nonce="${nonce}" src="${scriptUri}" defer></script>
         </head>

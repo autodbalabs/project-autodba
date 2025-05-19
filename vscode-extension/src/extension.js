@@ -1,7 +1,16 @@
 const vscode = require('vscode');
+// const { PostHog } = require('posthog-node');
 const { MainPanel } = require('./panels/MainPanel.js');
 const config = require('./utils/config.js');
 const logger = require('./utils/logger.js');
+
+// const posthog = new PostHog(config.get('posthog_api_key'), {
+//   host: config.get('posthog_host'),
+// });
+
+// posthog.capture({
+//   event: 'extension_activated',
+// });
 
 /**
  * @param {vscode.ExtensionContext} context
