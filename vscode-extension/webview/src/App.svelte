@@ -1,130 +1,96 @@
 <script>
-  import posthog from 'posthog-js'
   import { onMount } from 'svelte';
-  import router from '~/lib/router';
-  import ConnectionsRouter from './pages/connections/index.svelte';
+  import posthog from 'posthog-js';
+  import { vscode } from '~/lib/vscode';
   import Insights from './pages/Insights.svelte';
+  import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte';
 
-  let selectedConnection = null;
+  let connections = [];
+  let selectedConnection = '';
 
   onMount(() => {
     if (typeof window !== 'undefined') {
-      posthog.init(
-        'phc_vLseNAgoHJmcJ91o4rILkZ5zN7FlP8bup42r2keIPQh',
-        {
-          api_host: 'https://us.i.posthog.com',
-          person_profiles: 'always',
-        }
-      )
+      posthog.init('phc_vLseNAgoHJmcJ91o4rILkZ5zN7FlP8bup42r2keIPQh', {
+        api_host: 'https://us.i.posthog.com',
+        person_profiles: 'always'
+      });
     }
 
-    router.navigate('connections/list');
-    router.onRouteChanged(({ path, fullPath }) => {
-      console.log('Navigating to', path, fullPath);
-      posthog.capture('page_view', { page: path });
+    vscode.postMessage({ command: 'connections:list' });
+
+    window.addEventListener('message', (event) => {
+      const message = event.data;
+      if (message.type === 'connections') {
+        connections = message.connections;
+        if (!selectedConnection && connections.length > 0) {
+          selectedConnection = connections[0].name;
+        }
+      } else if (message.type === 'success') {
+        vscode.postMessage({ command: 'connections:list' });
+      }
     });
   });
-
-  function showInsights(connection) {
-    selectedConnection = connection;
-    router.navigate('insights');
-  }
-
-  const isConnectionsRoute = router.isCurrentRoutePrefix('connections');
-  const isInsightsRoute = router.isCurrentRoute('insights');
 </script>
 
 <main>
   <div class="container">
     <h1>AutoDBA: PostgreSQL Insights (Alpha)</h1>
-    <div class="state-controls">
-      <button 
-        class="state-toggle" 
-        class:active={$isConnectionsRoute}
-        on:click={() => router.navigate('connections/list')}
-      >
-        Connections
-      </button>
-      <button 
-        class="state-toggle"
-        on:click={() => router.navigate('connections/create')}
-      >
-        Add Connection
-      </button>
+
+    <div class="connection-select">
+      <label for="connection-select">Select Connection</label>
+      <select id="connection-select" bind:value={selectedConnection}>
+        <option value="" disabled selected>Select...</option>
+        {#each connections as conn}
+          <option value={conn.name}>{conn.name}</option>
+        {/each}
+      </select>
     </div>
-    
-    {#if $isConnectionsRoute}
-      <ConnectionsRouter onShowInsights={showInsights} {selectedConnection} />
-    {:else if $isInsightsRoute}
-      <Insights connection={selectedConnection} />
-    {/if}
+
+    <div class="new-connection">
+      <h2>Add Connection</h2>
+      <ConnectionUrlForm onSaved={() => vscode.postMessage({ command: 'connections:list' })} />
+    </div>
+
+    <Insights connection={selectedConnection} />
   </div>
 </main>
 
 <style>
   main {
-    font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif);
     padding: 20px;
     background-color: var(--dark-bg);
     min-height: 100vh;
     color: var(--text-light);
   }
-  
+
   .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
-  }
-  
-  h1 {
-    color: var(--text-light);
-    margin-bottom: 20px;
-    font-size: 2em;
-    font-weight: 500;
-  }
-  
-  .state-controls {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 24px;
   }
-  
-  .state-toggle {
-    padding: 8px 16px;
-    background: var(--vscode-button-background);
-    color: var(--vscode-button-foreground);
-    border: none;
+
+  h1 {
+    margin: 0;
+  }
+
+  .connection-select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  select {
+    padding: 8px;
     border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    border: 1px solid var(--dark-border);
   }
-  
-  .state-toggle:hover {
-    background: var(--vscode-button-hoverBackground);
+
+  .new-connection h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.2em;
   }
-  
-  .state-toggle.active {
-    background: var(--vscode-button-hoverBackground);
-  }
-  
-  button {
-    margin: 10px 0;
-    padding: 10px 20px;
-    background-color: var(--vscode-button-background);
-    color: var(--vscode-button-foreground);
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-  
-  button:hover {
-    background-color: var(--vscode-button-hoverBackground);
-  }
-  
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-</style> 
+</style>
