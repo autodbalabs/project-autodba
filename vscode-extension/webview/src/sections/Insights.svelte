@@ -1,13 +1,33 @@
 <script>
   import { onMount } from 'svelte';
   import { vscode } from '~/lib/vscode';
-  import InsightCard from '../components/insights/InsightCard.svelte';
+  import InsightGroup from '../components/insights/InsightGroup.svelte';
   import LoadingState from '../components/insights/LoadingState.svelte';
   import RefreshButton from '../components/common/RefreshButton.svelte';
   
   export let connection;
 
   let insights = [];
+  const GROUPS = [
+    { kind: 'unused-index', title: 'Unused Indexes' },
+    { kind: 'redundant-index', title: 'Redundant Indexes' },
+    { kind: 'config-optimization', title: 'Configuration Optimizations' },
+    { kind: 'slow-query', title: 'Slow Queries' },
+    { kind: 'permission-failure', title: 'Permission Issues' },
+    { kind: 'missing-extension', title: 'Missing Extensions' },
+    { kind: 'check-validation-failed', title: 'Validation Failures' },
+    { kind: 'check-failed', title: 'Check Errors' },
+    { kind: 'connection-failed', title: 'Connection Issues' },
+    { kind: 'prerequisites-failure', title: 'Prerequisite Checks' },
+    { kind: 'config-analysis-failure', title: 'Config Analysis Failures' }
+  ];
+  let groupedInsights = [];
+
+  $: groupedInsights = GROUPS.map(g => ({
+    title: g.title,
+    kind: g.kind,
+    insights: insights.filter(i => i.kind === g.kind)
+  }));
   let isLoading = true;
   let error = null;
   let lastRefreshTime = null;
@@ -74,9 +94,9 @@
       </div>
     {:else}
       <ul>
-        {#each insights as insight}
+        {#each groupedInsights as group}
           <li class="insight-item">
-            <InsightCard {insight} />
+            <InsightGroup title={group.title} insights={group.insights} />
           </li>
         {/each}
       </ul>

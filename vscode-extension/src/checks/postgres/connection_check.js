@@ -5,7 +5,6 @@ const BaseCheck = require('../../checks/base_check');
  * This check is marked as blocking so other checks are skipped when it fails.
  */
 class ConnectionCheck extends BaseCheck {
-  static id = 'connection';
   constructor(databaseManager) {
     super(databaseManager, { blocking: true });
   }

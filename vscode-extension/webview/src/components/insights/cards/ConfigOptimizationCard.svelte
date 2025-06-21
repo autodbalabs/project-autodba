@@ -1,6 +1,8 @@
 <script>
   import { getSeverityClass, getSeverityText } from '../../../lib/utils/severity';
   export let insight;
+  let expanded = false;
+  const toggle = () => expanded = !expanded;
 
   function formatValue(value) {
     if (typeof value === 'number') {
@@ -11,13 +13,15 @@
 </script>
 
 <div class="insight-config-optimization">
-  <div class="insight-header">
+  <div class="insight-header" on:click={toggle}>
     <span class="icon">⚙️</span>
     <span>{insight.title}</span>
     <span class="severity-badge {getSeverityClass(insight.severity_level)}">
       {getSeverityText(insight.severity_level)}
     </span>
+    <span class="toggle">{expanded ? '▼' : '▶'}</span>
   </div>
+  {#if expanded}
   <div class="insight-details">
     <div class="detail-group">
       <div class="detail-label">Parameter</div>
@@ -42,6 +46,7 @@
       </div>
     </div>
   </div>
+  {/if}
 </div>
 
 <style>
@@ -58,6 +63,7 @@
     align-items: center;
     margin-bottom: 12px;
     gap: 8px;
+    cursor: pointer;
   }
 
   .icon {
@@ -94,6 +100,10 @@
   .severity-badge.critical {
     background-color: var(--error-red);
     color: var(--text-light);
+  }
+
+  .toggle {
+    margin-left: auto;
   }
 
   .insight-details {
