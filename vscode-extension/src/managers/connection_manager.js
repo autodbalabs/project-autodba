@@ -1,4 +1,8 @@
 const vscode = require('vscode');
+const {
+  parseConnectionUrl,
+  sanitizeConnectionUrl
+} = require('../utils/connection_url');
 
 /**
  * Manages database connections and their storage
@@ -48,15 +52,28 @@ class ConnectionManager {
       throw new Error('Database kind is required');
     }
 
-    // Split connection details into sensitive and non-sensitive data
-    const { password, ...nonSensitiveDetails } = connectionDetails;
+    // When a URL is provided, split password from the stored URL
+    let password = connectionDetails.password;
+    let url = connectionDetails.url;
+    let options = connectionDetails.options || {};
 
-    // Store non-sensitive details in lowdb
+    if (url) {
+      const parsed = parseConnectionUrl(url);
+      password = password || parsed.password;
+      options = Object.keys(options).length ? options : parsed.options;
+      url = sanitizeConnectionUrl(url);
+    }
+
+    const nonSensitiveDetails = {
+      kind: connectionDetails.kind,
+      url,
+      options
+    };
+
     await this.db.read();
     this.db.data.connections[name] = nonSensitiveDetails;
     await this.db.write();
 
-    // Store sensitive details in secrets
     if (password) {
       await this.context.secrets.store(
         `autodba.connection.${name}.auth`,
@@ -64,8 +81,7 @@ class ConnectionManager {
       );
     }
 
-    // Add to connections list
-    this.connections.set(name, connectionDetails);
+    this.connections.set(name, { ...nonSensitiveDetails, password });
   }
 
   /**
@@ -106,11 +122,15 @@ class ConnectionManager {
     const authData = await this.context.secrets.get(`autodba.connection.${name}.auth`);
     const sensitiveDetails = authData ? JSON.parse(authData) : {};
 
-    return {
-      name,
-      ...nonSensitiveDetails,
-      ...sensitiveDetails
-    };
+    let result = { name, ...nonSensitiveDetails, ...sensitiveDetails };
+
+    if (nonSensitiveDetails.url) {
+      const parsed = parseConnectionUrl(nonSensitiveDetails.url);
+      parsed.password = sensitiveDetails.password || parsed.password;
+      result = { name, ...nonSensitiveDetails, ...parsed, ...sensitiveDetails };
+    }
+
+    return result;
   }
 
   /**
@@ -128,11 +148,15 @@ class ConnectionManager {
       const authData = await this.context.secrets.get(`autodba.connection.${name}.auth`);
       const sensitiveDetails = authData ? JSON.parse(authData) : {};
 
-      result.push({
-        name,
-        ...nonSensitiveDetails,
-        ...sensitiveDetails
-      });
+      let conn = { name, ...nonSensitiveDetails, ...sensitiveDetails };
+
+      if (nonSensitiveDetails.url) {
+        const parsed = parseConnectionUrl(nonSensitiveDetails.url);
+        parsed.password = sensitiveDetails.password || parsed.password;
+        conn = { name, ...nonSensitiveDetails, ...parsed, ...sensitiveDetails };
+      }
+
+      result.push(conn);
     }
 
     return result;
