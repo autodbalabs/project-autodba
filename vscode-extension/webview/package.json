@@ -11,9 +11,6 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "dependencies": {
-        "posthog-js": "^1.242.2"
-    },
     "devDependencies": {
         "@sveltejs/vite-plugin-svelte": "^5.0.3",
         "eslint": "^9.25.0",

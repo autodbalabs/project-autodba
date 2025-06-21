@@ -15,10 +15,6 @@ const defaultConfig = {
         log_level: 'info',
         auto_refresh: true,
         refresh_interval: 30
-    },
-    posthog: {
-        api_key: '',
-        host: 'https://us.i.posthog.com'
     }
 };
 

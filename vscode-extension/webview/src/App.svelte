@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte';
-  import posthog from 'posthog-js';
   import { vscode } from '~/lib/vscode';
 import Insights from './pages/Insights.svelte';
 import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte';
@@ -32,13 +31,6 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
   }
 
   onMount(() => {
-    if (typeof window !== 'undefined') {
-      posthog.init('phc_vLseNAgoHJmcJ91o4rILkZ5zN7FlP8bup42r2keIPQh', {
-        api_host: 'https://us.i.posthog.com',
-        person_profiles: 'always'
-      });
-    }
-
     refreshConnections();
 
     window.addEventListener('message', (event) => {
