@@ -1,11 +1,13 @@
 const BaseCheck = require('../../checks/base_check');
 const { getSeverityLevel } = require('../../utils/severity');
+const os = require('os');
 
 /**
  * Configuration suggestions check for PostgreSQL
  * Analyzes current configuration and suggests optimizations based on PostgreSQL system information
  */
 class ConfigSuggestionsCheck extends BaseCheck {
+  static id = 'config-suggestions';
   /**
    * Validate if the check can be performed
    * @param {Object} context - Context from previous checks
@@ -65,7 +67,7 @@ class ConfigSuggestionsCheck extends BaseCheck {
       // Get system information from PostgreSQL
       const systemInfo = await this.databaseManager.executeQuery(`
         WITH system_info AS (
-          SELECT 
+          SELECT
             (SELECT setting::bigint FROM pg_settings WHERE name = 'shared_buffers') as shared_buffers,
             (SELECT setting::bigint FROM pg_settings WHERE name = 'work_mem') as work_mem,
             (SELECT setting::bigint FROM pg_settings WHERE name = 'maintenance_work_mem') as maintenance_work_mem,
@@ -78,8 +80,11 @@ class ConfigSuggestionsCheck extends BaseCheck {
         SELECT * FROM system_info
       `);
 
+      const ramMb = Math.floor(os.totalmem() / (1024 * 1024));
+      const systemData = { ...systemInfo.rows[0], ram_mb: ramMb };
+
       // Analyze and suggest configuration changes
-      const suggestions = this._analyzeConfig(config.rows, systemInfo.rows[0]);
+      const suggestions = this._analyzeConfig(config.rows, systemData);
       
       for (const suggestion of suggestions) {
         insights.push({

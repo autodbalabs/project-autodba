@@ -20,7 +20,7 @@ class InsightsManager {
    * Get insights from available checks
    * @returns {Promise<Array<Object>>} Array of insights
    */
-  async getInsights() {
+  async getInsights(checkIds = null) {
     // Run preflight/prerequisite checks first
     const prereqResult = await this.manager.checkPrerequisites();
     const allInsights = [...prereqResult.insights];
@@ -29,7 +29,7 @@ class InsightsManager {
       return allInsights;
     }
 
-    const checks = this.manager.getAvailableChecks();
+    const checks = this.manager.getAvailableChecks(checkIds);
     const { insights } = await this.manager.executeChecks(checks);
     return allInsights.concat(insights);
   }

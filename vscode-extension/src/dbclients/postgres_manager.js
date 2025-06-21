@@ -28,6 +28,9 @@ class PostgresManager extends DatabaseManager {
   }
 
   resolveConnectionDetails(connectionDetails) {
+    // Default to 30s if no timeout is provided
+    const DEFAULT_TIMEOUT = 30000;
+
     if (connectionDetails.url) {
       const parsed = parseConnectionUrl(connectionDetails.url);
       return {
@@ -36,16 +39,19 @@ class PostgresManager extends DatabaseManager {
         database: parsed.dbname,
         user: parsed.username,
         password: connectionDetails.password || parsed.password,
+        connectionTimeoutMillis: connectionDetails.connectionTimeoutMillis ?? parsed.options.connectionTimeoutMillis ?? DEFAULT_TIMEOUT,
         ...parsed.options,
         ...(connectionDetails.options || {})
       };
     }
+
     return {
       host: connectionDetails.host,
       port: connectionDetails.port,
       database: connectionDetails.dbname,
       user: connectionDetails.username,
       password: connectionDetails.password,
+      connectionTimeoutMillis: connectionDetails.connectionTimeoutMillis ?? connectionDetails.options?.connectionTimeoutMillis ?? DEFAULT_TIMEOUT,
       ...(connectionDetails.options || {})
     };
   }
@@ -258,10 +264,15 @@ class PostgresManager extends DatabaseManager {
    * Get available checks
    * @returns {Array<BaseCheck>} Array of check instances
    */
-  getAvailableChecks() {
+  getAvailableChecks(ids = null) {
     const { getChecks } = require('../utils/check_registry');
-    const checkClasses = getChecks(this.kind);
+    const checkClasses = getChecks(this.kind, ids);
     return checkClasses.map(Check => new Check(this));
+  }
+
+  listChecks() {
+    const { listCheckIds } = require('../utils/check_registry');
+    return listCheckIds(this.kind);
   }
 
   /**
