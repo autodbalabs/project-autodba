@@ -71,6 +71,7 @@
     padding: 16px;
     border-radius: 6px;
     border: 1px solid var(--dark-border);
+    flex: 1;
   }
 
   .form-group {
@@ -90,6 +91,7 @@
     border: 1px solid var(--dark-border);
     background: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
+    width: 100%;
   }
 
   .error {
