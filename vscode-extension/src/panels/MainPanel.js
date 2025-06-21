@@ -119,7 +119,6 @@ class MainPanel {
           <meta http-equiv="Content-Security-Policy" content="
             default-src 'none';
             script-src 'nonce-${nonce}';
-            connect-src https://us.i.posthog.com https://us-assets.i.posthog.com;
             style-src ${webview.cspSource};
             img-src data:;
           ">
