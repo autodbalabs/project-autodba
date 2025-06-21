@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const DatabaseManager = require('./database_manager');
 const { IndexAuditCheck, SlowQueriesCheck, ConfigSuggestionsCheck } = require('../checks/postgres');
+const { parseConnectionUrl } = require('../utils/connection_url');
 /**
  * @typedef {Object} PostgresConnectionProps
  * @property {string} host - Database host
@@ -26,12 +27,25 @@ class PostgresManager extends DatabaseManager {
   }
 
   resolveConnectionDetails(connectionDetails) {
+    if (connectionDetails.url) {
+      const parsed = parseConnectionUrl(connectionDetails.url);
+      return {
+        host: parsed.host,
+        port: parsed.port,
+        database: parsed.dbname,
+        user: parsed.username,
+        password: connectionDetails.password || parsed.password,
+        ...parsed.options,
+        ...(connectionDetails.options || {})
+      };
+    }
     return {
       host: connectionDetails.host,
       port: connectionDetails.port,
       database: connectionDetails.dbname,
       user: connectionDetails.username,
-      password: connectionDetails.password
+      password: connectionDetails.password,
+      ...(connectionDetails.options || {})
     };
   }
 

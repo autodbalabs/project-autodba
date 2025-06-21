@@ -9,24 +9,32 @@
 
   function parseUrl(dbUrl) {
     const u = new URL(dbUrl);
+    const options = {};
+    u.searchParams.forEach((value, key) => {
+      options[key] = value;
+    });
     return {
       kind: 'postgresql',
       host: u.hostname,
       port: parseInt(u.port) || 5432,
       username: decodeURIComponent(u.username),
       password: decodeURIComponent(u.password),
-      dbname: u.pathname.replace(/^\//, '')
+      dbname: u.pathname.replace(/^\//, ''),
+      options
     };
   }
 
   function handleSubmit(event) {
     event.preventDefault();
     try {
-      const connection = parseUrl(url);
+      const parsed = parseUrl(url);
       vscode.postMessage({
         command: 'connections:save',
-        name: name || connection.dbname || connection.host,
-        connection
+        name: name || parsed.dbname || parsed.host,
+        connection: {
+          kind: 'postgresql',
+          url
+        }
       });
       name = '';
       url = '';
