@@ -22,6 +22,14 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
     refreshConnections();
   }
 
+  function handleDeleteConnection() {
+    if (!selectedConnection) return;
+    vscode.postMessage({
+      command: 'connections:delete',
+      name: selectedConnection
+    });
+  }
+
   onMount(() => {
     if (typeof window !== 'undefined') {
       posthog.init('phc_vLseNAgoHJmcJ91o4rILkZ5zN7FlP8bup42r2keIPQh', {
@@ -69,6 +77,8 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
         </div>
         {#if !selectedConnection}
           <button class="add-btn" on:click={handleAddConnection}>Add Connection</button>
+        {:else}
+          <button class="delete-btn" on:click={handleDeleteConnection}>Delete Connection</button>
         {/if}
       {/if}
     </div>
@@ -119,6 +129,10 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
   }
 
   .add-btn {
+    width: fit-content;
+  }
+
+  .delete-btn {
     width: fit-content;
   }
 </style>
