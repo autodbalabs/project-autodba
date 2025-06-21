@@ -53,10 +53,10 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
 
     <div class="connection-controls">
       {#if addingConnection}
-        <ConnectionUrlForm onSaved={handleConnectionSaved} />
-        <button class="cancel-btn" on:click={() => (addingConnection = false)}>
-          Cancel
-        </button>
+        <ConnectionUrlForm
+          onSaved={handleConnectionSaved}
+          onCancel={() => (addingConnection = false)}
+        />
       {:else}
         <div class="connection-select">
           <label for="connection-select">Select Connection</label>
@@ -118,8 +118,7 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
     border: 1px solid var(--dark-border);
   }
 
-  .add-btn,
-  .cancel-btn {
+  .add-btn {
     width: fit-content;
   }
 </style>

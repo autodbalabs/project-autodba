@@ -1,6 +1,7 @@
 <script>
   import { vscode } from '~/lib/vscode';
   export let onSaved = () => {};
+  export let onCancel = () => {};
 
   let name = '';
   let url = '';
@@ -59,7 +60,10 @@
   {#if error}
     <div class="error">{error}</div>
   {/if}
-  <button type="submit">Add Connection</button>
+  <div class="button-row">
+    <button type="submit">Add Connection</button>
+    <button type="button" class="cancel-btn" on:click={onCancel}>Cancel</button>
+  </div>
 </form>
 
 <style>
@@ -72,6 +76,7 @@
     border-radius: 6px;
     border: 1px solid var(--dark-border);
     flex: 1;
+    width: 100%;
   }
 
   .form-group {
@@ -101,5 +106,10 @@
 
   button {
     align-self: flex-start;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 8px;
   }
 </style>
