@@ -2,7 +2,7 @@
   import InsightCard from './InsightCard.svelte';
   export let title;
   export let insights = [];
-  let expanded = insights.length > 0;
+  let expanded = false;
   const toggle = () => expanded = !expanded;
 </script>
 
