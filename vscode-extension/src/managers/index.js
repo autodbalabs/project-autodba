@@ -1,8 +1,8 @@
-const DatabaseManager = require('./database_manager');
-const PostgresManager = require('./postgres');
+const DatabaseManager = require('../dbclients/database_manager');
+const PostgresManager = require('../dbclients/postgres_manager');
 const ConnectionManager = require('./connection_manager');
 const InsightsManager = require('./insights_manager');
-const DatabaseManagerFactory = require('./database_manager_factory');
+const DatabaseManagerFactory = require('../dbclients/database_manager_factory');
 
 module.exports = {
   DatabaseManager,

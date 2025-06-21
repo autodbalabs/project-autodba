@@ -21,42 +21,17 @@ class InsightsManager {
    * @returns {Promise<Array<Object>>} Array of insights
    */
   async getInsights() {
-    const allInsights = [];
-    const checks = this.manager.getAvailableChecks();
+    // Run preflight/prerequisite checks first
+    const prereqResult = await this.manager.checkPrerequisites();
+    const allInsights = [...prereqResult.insights];
 
-    for (const check of checks) {
-      try {
-        // Run preflight validation first
-        const validationInsights = await check.validate();
-        
-        // If there are any critical validation issues, skip this check
-        const hasCriticalIssues = validationInsights.some(insight => insight.severity_level === 5);
-        if (hasCriticalIssues) {
-          allInsights.push(...validationInsights);
-          continue;
-        }
-
-        // Run the check if validation passed
-        const insights = await check.generateInsights();
-        allInsights.push(...insights);
-      } catch (error) {
-        console.error(`Error executing check ${check.constructor.name}:`, error);
-        allInsights.push({
-          kind: 'check-error',
-          severity_level: 5,
-          location: 'system',
-          resolution: null,
-          title: `Error in ${check.constructor.name}`,
-          context: {
-            error: error.message,
-            status: 'failed',
-            impact: 'critical'
-          }
-        });
-      }
+    if (prereqResult.insights.some(insight => insight.severity_level === 5)) {
+      return allInsights;
     }
 
-    return allInsights;
+    const checks = this.manager.getAvailableChecks();
+    const { insights } = await this.manager.executeChecks(checks);
+    return allInsights.concat(insights);
   }
 
   /**
