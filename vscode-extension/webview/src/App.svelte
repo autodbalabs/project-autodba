@@ -17,8 +17,9 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
     addingConnection = true;
   }
 
-  function handleConnectionSaved() {
+  function handleConnectionSaved(name) {
     addingConnection = false;
+    selectedConnection = name || selectedConnection;
     refreshConnections();
   }
 
@@ -49,7 +50,7 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
           selectedConnection = '';
         }
       } else if (message.type === 'success') {
-        handleConnectionSaved();
+        handleConnectionSaved(message.name);
       }
     });
   });

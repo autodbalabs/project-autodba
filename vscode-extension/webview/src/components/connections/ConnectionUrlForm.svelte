@@ -47,7 +47,7 @@
   const messageHandler = (event) => {
     const message = event.data;
     if (message.type === 'success') {
-      onSaved();
+      onSaved(message.name);
     }
   };
 

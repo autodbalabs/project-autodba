@@ -11,7 +11,8 @@ class SaveConnectionCommand extends BaseCommand {
       vscode.window.showInformationMessage('Connection saved successfully!');
 
       webview.postMessage({
-        type: 'success'
+        type: 'success',
+        name: message.name
       });
     } catch (error) {
       vscode.window.showErrorMessage(`Failed to save connection: ${error.message}`);
