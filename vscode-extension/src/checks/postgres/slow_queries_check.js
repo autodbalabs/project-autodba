@@ -5,6 +5,7 @@ const { getSeverityLevel } = require('../../utils/severity');
  * Slow queries analysis check
  */
 class SlowQueriesCheck extends BaseCheck {
+  static id = 'slow-queries';
   /**
    * Validate if the check can be performed
    * @param {Object} context - Context from previous checks

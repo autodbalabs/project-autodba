@@ -1,10 +1,9 @@
 const BaseCommand = require('./BaseCommand');
 const DatabaseManagerFactory = require('../dbclients/database_manager_factory');
 const { ConnectionManager } = require('../managers/connection_manager');
-const InsightsManager = require('../managers/insights_manager');
 const logger = require('../utils/logger');
 
-class ListInsightsCommand extends BaseCommand {
+class ListChecksCommand extends BaseCommand {
   async execute(message, webview) {
     try {
       const connectionName = message.connection;
@@ -19,21 +18,20 @@ class ListInsightsCommand extends BaseCommand {
       }
 
       const databaseManager = DatabaseManagerFactory.create(connectionDetails);
-      const insightsManager = new InsightsManager(databaseManager, this.context);
-      const insights = await insightsManager.getInsights(message.checks);
-      
+      const checks = databaseManager.listChecks();
+
       webview.postMessage({
-        type: 'insights',
-        insights: insights
+        type: 'checks',
+        checks
       });
     } catch (error) {
-      logger.log('Failed to get insights:', error);
+      logger.log('Failed to list checks:', error);
       webview.postMessage({
         type: 'error',
-        message: `Failed to get insights: ${error.message}`
+        message: `Failed to list checks: ${error.message}`
       });
     }
   }
 }
 
-module.exports = ListInsightsCommand;
+module.exports = ListChecksCommand;

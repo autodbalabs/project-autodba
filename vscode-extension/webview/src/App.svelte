@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import { vscode } from '~/lib/vscode';
-import Insights from './pages/Insights.svelte';
+import Insights from './sections/Insights.svelte';
 import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte';
 
   let connections = [];
@@ -76,7 +76,9 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
       {/if}
     </div>
 
-    <Insights connection={selectedConnection} />
+    {#if selectedConnection}
+      <Insights connection={selectedConnection} />
+    {/if}
   </div>
 </main>
 

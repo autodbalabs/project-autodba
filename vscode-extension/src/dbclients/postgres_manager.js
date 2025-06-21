@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const DatabaseManager = require('./database_manager');
-const { IndexAuditCheck, SlowQueriesCheck, ConfigSuggestionsCheck } = require('../checks/postgres');
+// Require check modules to ensure they register themselves with the registry
+require('../checks/postgres');
 const { parseConnectionUrl } = require('../utils/connection_url');
 /**
  * @typedef {Object} PostgresConnectionProps
@@ -27,6 +28,9 @@ class PostgresManager extends DatabaseManager {
   }
 
   resolveConnectionDetails(connectionDetails) {
+    // Default to 30s if no timeout is provided
+    const DEFAULT_TIMEOUT = 30000;
+
     if (connectionDetails.url) {
       const parsed = parseConnectionUrl(connectionDetails.url);
       return {
@@ -35,16 +39,19 @@ class PostgresManager extends DatabaseManager {
         database: parsed.dbname,
         user: parsed.username,
         password: connectionDetails.password || parsed.password,
+        connectionTimeoutMillis: connectionDetails.connectionTimeoutMillis ?? parsed.options.connectionTimeoutMillis ?? DEFAULT_TIMEOUT,
         ...parsed.options,
         ...(connectionDetails.options || {})
       };
     }
+
     return {
       host: connectionDetails.host,
       port: connectionDetails.port,
       database: connectionDetails.dbname,
       user: connectionDetails.username,
       password: connectionDetails.password,
+      connectionTimeoutMillis: connectionDetails.connectionTimeoutMillis ?? connectionDetails.options?.connectionTimeoutMillis ?? DEFAULT_TIMEOUT,
       ...(connectionDetails.options || {})
     };
   }
@@ -257,12 +264,15 @@ class PostgresManager extends DatabaseManager {
    * Get available checks
    * @returns {Array<BaseCheck>} Array of check instances
    */
-  getAvailableChecks() {
-    return [
-      new IndexAuditCheck(this),
-      new SlowQueriesCheck(this),
-      new ConfigSuggestionsCheck(this)
-    ];
+  getAvailableChecks(ids = null) {
+    const { getChecks } = require('../utils/check_registry');
+    const checkClasses = getChecks(this.kind, ids);
+    return checkClasses.map(Check => new Check(this));
+  }
+
+  listChecks() {
+    const { listCheckIds } = require('../utils/check_registry');
+    return listCheckIds(this.kind);
   }
 
   /**
@@ -280,11 +290,13 @@ class PostgresManager extends DatabaseManager {
       try {
         // First check if the check can run
         const validationInsights = await check.validate(currentContext);
-        
-        // If there are any critical validation issues, skip this check
+
         const hasCriticalIssues = validationInsights.some(insight => insight.severity_level === 5);
         if (hasCriticalIssues) {
           allInsights.push(...validationInsights);
+          if (check.shouldBlock()) {
+            break;
+          }
           continue;
         }
 
@@ -292,6 +304,9 @@ class PostgresManager extends DatabaseManager {
         const insights = await check.generateInsights(currentContext);
         if (insights) {
           allInsights.push(...insights);
+        }
+        if (check.shouldBlock()) {
+          break;
         }
       } catch (error) {
         console.error(`Error executing check ${check.constructor.name}:`, error);

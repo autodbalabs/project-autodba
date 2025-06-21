@@ -8,12 +8,15 @@ class BaseCheck {
   /**
    * Create a new check instance
    * @param {DatabaseManager} databaseManager - Database manager for executing queries
+   * @param {Object} [options] - Additional options
+   * @param {boolean} [options.blocking] - If true, critical validation failures will stop further checks
    */
-  constructor(databaseManager) {
+  constructor(databaseManager, options = {}) {
     if (!databaseManager) {
       throw new Error('DatabaseManager is required');
     }
     this.databaseManager = databaseManager;
+    this.blocking = options.blocking || false;
   }
 
   /**
@@ -32,6 +35,15 @@ class BaseCheck {
    */
   async generateInsights(context = {}) {
     throw new Error('generateInsights() must be implemented by subclass');
+  }
+
+  /**
+   * Determine if execution should stop after this check.
+   * Subclasses can override for custom logic.
+   * @returns {boolean}
+   */
+  shouldBlock() {
+    return this.blocking;
   }
 }
 

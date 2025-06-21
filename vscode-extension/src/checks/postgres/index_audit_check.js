@@ -4,6 +4,7 @@ const BaseCheck = require('../../checks/base_check');
  * Index Audit analysis check
  */
 class IndexAuditCheck extends BaseCheck {
+  static id = 'index-audit';
   /**
    * Validate if the check can be performed
    * @param {Object} context - Context from previous checks

@@ -16,6 +16,8 @@ AutoDBA helps developers and DBAs find and fix common PostgreSQL performance iss
 3. Select: `AutoDBA: PostgreSQL Insights`.
 4. Connect to your Postgres database.
 5. Click **“Insights”** and review recommendations.
+6. Optionally run `checks:list` to view available checks and specify which ones
+   to execute with `insights:list`.
 
 ## ✅ Current Features
 
