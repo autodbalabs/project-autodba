@@ -2,11 +2,25 @@
   import { onMount } from 'svelte';
   import posthog from 'posthog-js';
   import { vscode } from '~/lib/vscode';
-  import Insights from './pages/Insights.svelte';
-  import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte';
+import Insights from './pages/Insights.svelte';
+import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte';
 
   let connections = [];
   let selectedConnection = '';
+  let addingConnection = false;
+
+  function refreshConnections() {
+    vscode.postMessage({ command: 'connections:list' });
+  }
+
+  function handleAddConnection() {
+    addingConnection = true;
+  }
+
+  function handleConnectionSaved() {
+    addingConnection = false;
+    refreshConnections();
+  }
 
   onMount(() => {
     if (typeof window !== 'undefined') {
@@ -16,7 +30,7 @@
       });
     }
 
-    vscode.postMessage({ command: 'connections:list' });
+    refreshConnections();
 
     window.addEventListener('message', (event) => {
       const message = event.data;
@@ -26,7 +40,7 @@
           selectedConnection = connections[0].name;
         }
       } else if (message.type === 'success') {
-        vscode.postMessage({ command: 'connections:list' });
+        handleConnectionSaved();
       }
     });
   });
@@ -36,19 +50,24 @@
   <div class="container">
     <h1>AutoDBA: PostgreSQL Insights (Alpha)</h1>
 
-    <div class="connection-select">
-      <label for="connection-select">Select Connection</label>
-      <select id="connection-select" bind:value={selectedConnection}>
-        <option value="" disabled selected>Select...</option>
-        {#each connections as conn}
-          <option value={conn.name}>{conn.name}</option>
-        {/each}
-      </select>
-    </div>
-
-    <div class="new-connection">
-      <h2>Add Connection</h2>
-      <ConnectionUrlForm onSaved={() => vscode.postMessage({ command: 'connections:list' })} />
+    <div class="connection-controls">
+      {#if addingConnection}
+        <ConnectionUrlForm onSaved={handleConnectionSaved} />
+        <button class="cancel-btn" on:click={() => (addingConnection = false)}>
+          Cancel
+        </button>
+      {:else}
+        <div class="connection-select">
+          <label for="connection-select">Select Connection</label>
+          <select id="connection-select" bind:value={selectedConnection}>
+            <option value="" disabled>Select...</option>
+            {#each connections as conn}
+              <option value={conn.name}>{conn.name}</option>
+            {/each}
+          </select>
+        </div>
+        <button class="add-btn" on:click={handleAddConnection}>Add Connection</button>
+      {/if}
     </div>
 
     <Insights connection={selectedConnection} />
@@ -75,6 +94,12 @@
     margin: 0;
   }
 
+  .connection-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
   .connection-select {
     display: flex;
     flex-direction: column;
@@ -89,8 +114,8 @@
     border: 1px solid var(--dark-border);
   }
 
-  .new-connection h2 {
-    margin: 0 0 8px 0;
-    font-size: 1.2em;
+  .add-btn,
+  .cancel-btn {
+    width: fit-content;
   }
 </style>
