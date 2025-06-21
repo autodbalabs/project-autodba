@@ -76,7 +76,9 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
       {/if}
     </div>
 
-    <Insights connection={selectedConnection} />
+    {#if selectedConnection}
+      <Insights connection={selectedConnection} />
+    {/if}
   </div>
 </main>
 

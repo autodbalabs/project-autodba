@@ -36,6 +36,8 @@
 
     refreshInsights();
   });
+
+  $: console.log("connection url", connection)
 </script>
 
 <div class="insights-container">
