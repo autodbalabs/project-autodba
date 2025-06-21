@@ -36,8 +36,9 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
       const message = event.data;
       if (message.type === 'connections') {
         connections = message.connections;
-        if (!selectedConnection && connections.length > 0) {
-          selectedConnection = connections[0].name;
+        const exists = connections.some((c) => c.name === selectedConnection);
+        if (!exists) {
+          selectedConnection = '';
         }
       } else if (message.type === 'success') {
         handleConnectionSaved();
@@ -60,13 +61,15 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
         <div class="connection-select">
           <label for="connection-select">Select Connection</label>
           <select id="connection-select" bind:value={selectedConnection}>
-            <option value="" disabled>Select...</option>
+            <option value="">Select...</option>
             {#each connections as conn}
               <option value={conn.name}>{conn.name}</option>
             {/each}
           </select>
         </div>
-        <button class="add-btn" on:click={handleAddConnection}>Add Connection</button>
+        {#if !selectedConnection}
+          <button class="add-btn" on:click={handleAddConnection}>Add Connection</button>
+        {/if}
       {/if}
     </div>
 
@@ -96,7 +99,7 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
 
   .connection-controls {
     display: flex;
-    flex-direction: column;
+    align-items: flex-end;
     gap: 12px;
   }
 
@@ -104,6 +107,7 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex: 1;
   }
 
   select {
