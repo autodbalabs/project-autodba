@@ -1,6 +1,5 @@
 const { Pool } = require('pg');
 const DatabaseManager = require('./database_manager');
-const postgresChecks = require('../checks/postgres');
 const { parseConnectionUrl } = require('../utils/connection_url');
 /**
  * @typedef {Object} PostgresConnectionProps
@@ -19,9 +18,7 @@ class PostgresManager extends DatabaseManager {
   constructor(connectionDetails) {
     super(connectionDetails);
 
-    this.identifier = connectionDetails.name;
     this.pool = new Pool(this.resolveConnectionDetails(connectionDetails));
-    postgresChecks.registerChecks(this.identifier);
   }
 
   get kind() {

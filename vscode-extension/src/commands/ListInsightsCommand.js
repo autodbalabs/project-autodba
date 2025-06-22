@@ -3,6 +3,7 @@ const DatabaseManagerFactory = require('../dbclients/database_manager_factory');
 const { ConnectionManager } = require('../managers/connection_manager');
 const InsightsManager = require('../managers/insights_manager');
 const logger = require('../utils/logger');
+const postgresChecks = require('../checks/postgres');
 
 class ListInsightsCommand extends BaseCommand {
   async execute(message, webview) {
@@ -17,6 +18,10 @@ class ListInsightsCommand extends BaseCommand {
       const connectionDetails = await connectionManager.getConnection(connectionName);
       if (!connectionDetails) {
         throw new Error(`Failed to get connection details for: ${connectionName}`);
+      }
+
+      if (connectionDetails.kind === 'postgresql' || connectionDetails.kind === 'postgres') {
+        postgresChecks.registerChecks(connectionName);
       }
 
       databaseManager = DatabaseManagerFactory.create(connectionDetails);
