@@ -19,8 +19,9 @@ class PostgresManager extends DatabaseManager {
   constructor(connectionDetails) {
     super(connectionDetails);
 
+    this.identifier = connectionDetails.name;
     this.pool = new Pool(this.resolveConnectionDetails(connectionDetails));
-    postgresChecks.registerChecks();
+    postgresChecks.registerChecks(this.identifier);
   }
 
   get kind() {
@@ -242,7 +243,6 @@ class PostgresManager extends DatabaseManager {
    */
   async close() {
     await this.pool.end();
-    postgresChecks.deregisterChecks();
   }
 }
 

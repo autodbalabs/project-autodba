@@ -1,3 +1,4 @@
+// registry maps kind -> identifier -> Map<id, CheckClass>
 const registry = new Map();
 
 /**
@@ -7,72 +8,44 @@ const registry = new Map();
  * @param {string} kind
  * @param {Function} CheckClass
  */
-function registerCheck(kind, CheckClass) {
+function registerCheck(kind, identifier, CheckClass) {
   const id = CheckClass.id || CheckClass.name;
   if (!registry.has(kind)) {
     registry.set(kind, new Map());
   }
-  registry.get(kind).set(id, CheckClass);
-}
-
-/**
- * Deregister a check for a specific database kind.
- *
- * @param {string} kind
- * @param {Function} CheckClass
- */
-function deregisterCheck(kind, CheckClass) {
-  const id = CheckClass.id || CheckClass.name;
-  const checks = registry.get(kind);
-  if (checks) {
-    checks.delete(id);
-    if (checks.size === 0) {
-      registry.delete(kind);
-    }
+  const kindMap = registry.get(kind);
+  if (!kindMap.has(identifier)) {
+    kindMap.set(identifier, new Map());
   }
+  kindMap.get(identifier).set(id, CheckClass);
 }
 
 /**
- * Remove all checks for the given kind.
- *
- * @param {string} kind
- */
-function clearChecks(kind) {
-  registry.delete(kind);
-}
+ * Get check classes for a kind and optional identifier.
+ * When identifier is provided only checks registered for that identifier
+ * will be returned.
+*
+* @param {string} kind
+* @param {string} [identifier]
+* @returns {Array<Function>}
+*/
+function getChecks(kind, identifier = null) {
+  const kindMap = registry.get(kind);
+  if (!kindMap) return [];
 
-/**
- * Get check classes for a kind. When an array of ids is supplied only those
- * checks will be returned.
- *
- * @param {string} kind
- * @param {Array<string>} [ids]
- * @returns {Array<Function>}
- */
-function getChecks(kind, ids = null) {
-  const checks = registry.get(kind) || new Map();
-  if (!ids) {
-    return Array.from(checks.values());
+  if (identifier) {
+    const checks = kindMap.get(identifier);
+    return checks ? Array.from(checks.values()) : [];
   }
-  return ids
-    .map(id => checks.get(id))
-    .filter(Boolean);
-}
 
-/**
- * List available check identifiers for a given kind.
- *
- * @param {string} kind
- * @returns {Array<string>}
- */
-function listCheckIds(kind) {
-  return Array.from((registry.get(kind) || new Map()).keys());
+  let result = [];
+  for (const checks of kindMap.values()) {
+    result = result.concat(Array.from(checks.values()));
+  }
+  return result;
 }
 
 module.exports = {
   registerCheck,
-  deregisterCheck,
-  clearChecks,
-  getChecks,
-  listCheckIds
+  getChecks
 };

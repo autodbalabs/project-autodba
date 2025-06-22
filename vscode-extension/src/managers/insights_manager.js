@@ -65,7 +65,8 @@ class InsightsManager {
     }
 
     const checkClasses = getChecks(
-      this.manager.getDatabaseType ? this.manager.getDatabaseType() : this.manager.kind
+      this.manager.getDatabaseType ? this.manager.getDatabaseType() : this.manager.kind,
+      this.manager.connectionDetails?.name
     );
     const checks = checkClasses.map(Check => new Check(this.manager));
     const { insights } = await this._executeChecks(checks);
