@@ -129,11 +129,11 @@ class SlowQueriesCheck extends BaseCheck {
     try {
       // Get slow queries
       const slowQueries = await this.databaseManager.executeQuery(`
-        SELECT 
+        SELECT
           query,
           calls,
-          total_time,
-          mean_time,
+          COALESCE(total_exec_time, total_time) AS total_time,
+          COALESCE(mean_exec_time, mean_time) AS mean_time,
           rows,
           shared_blks_hit,
           shared_blks_read,
@@ -146,8 +146,8 @@ class SlowQueriesCheck extends BaseCheck {
           blk_read_time,
           blk_write_time
         FROM pg_stat_statements
-        WHERE mean_time > 100  -- More than 100ms average
-        ORDER BY mean_time DESC
+        WHERE COALESCE(mean_exec_time, mean_time) > 100
+        ORDER BY COALESCE(mean_exec_time, mean_time) DESC
         LIMIT 10
       `);
 
