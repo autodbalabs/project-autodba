@@ -3,6 +3,11 @@ const {
   parseConnectionUrl,
   sanitizeConnectionUrl
 } = require('../utils/connection_url');
+const {
+  getCpuCount,
+  getTotalMemoryBytes,
+  detectStorageType
+} = require('../utils/system_info');
 
 /**
  * Manages database connections and their storage
@@ -67,7 +72,12 @@ class ConnectionManager {
     const nonSensitiveDetails = {
       kind: connectionDetails.kind,
       url,
-      options
+      options,
+      system: {
+        cpus: getCpuCount(),
+        memory_bytes: getTotalMemoryBytes(),
+        storage_type: detectStorageType()
+      }
     };
 
     await this.db.read();

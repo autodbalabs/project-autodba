@@ -91,9 +91,17 @@ class PostgresManager extends DatabaseManager {
    */
   async checkPrerequisites() {
     const insights = [];
+    const context = {};
     try {
       // Check basic connectivity
       await this.executeQuery('SELECT 1');
+
+      try {
+        const ver = await this.executeQuery('SHOW server_version');
+        context.server_version = ver.rows[0].server_version;
+      } catch (e) {
+        context.server_version = 'unknown';
+      }
       
       // Check if we have necessary permissions for all required tables
       const permissionCheck = await this.executeQuery(`
@@ -232,7 +240,7 @@ class PostgresManager extends DatabaseManager {
         }
       });
     }
-    return { insights };
+    return { insights, context };
   }
 
   /**

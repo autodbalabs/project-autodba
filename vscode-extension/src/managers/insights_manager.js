@@ -17,12 +17,12 @@ class InsightsManager {
    * @param {Array<BaseCheck>} checks
    * @returns {Promise<{context: Object, insights: Array<Object>}>}
    */
-  async _executeChecks(checks) {
+  async _executeChecks(checks, initialContext = {}) {
     const ordered = checks.sort(
       (a, b) => (a.constructor.weight || 0) - (b.constructor.weight || 0)
     );
     const allInsights = [];
-    let currentContext = { capabilities: {} };
+    let currentContext = { capabilities: {}, ...initialContext };
 
     for (const check of ordered) {
       try {
@@ -73,7 +73,7 @@ class InsightsManager {
       this.manager.connectionDetails?.name
     );
     const checks = checkClasses.map(Check => new Check(this.manager));
-    const { insights } = await this._executeChecks(checks);
+    const { insights } = await this._executeChecks(checks, prereqResult.context);
     return allInsights.concat(insights);
   }
 }
