@@ -1,6 +1,8 @@
 /**
  * Manages database insights and their application
  */
+const { getChecks } = require('../utils/check_registry');
+
 class InsightsManager {
   /**
    * Create a new insights manager instance
@@ -24,7 +26,10 @@ class InsightsManager {
       return allInsights;
     }
 
-    const checks = this.manager.getAvailableChecks();
+    const checkClasses = getChecks(
+      this.manager.getDatabaseType ? this.manager.getDatabaseType() : this.manager.kind
+    );
+    const checks = checkClasses.map(Check => new Check(this.manager));
     const { insights } = await this.manager.executeChecks(checks);
     return allInsights.concat(insights);
   }
