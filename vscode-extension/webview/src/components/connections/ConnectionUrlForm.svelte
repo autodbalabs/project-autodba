@@ -6,8 +6,8 @@
   let name = '';
   let url = '';
   let cpus = '';
-  let memory_bytes = '';
-  let storage_type = '';
+  let memory_gb = '';
+  let storage_type = 'ssd';
   let error = '';
 
   function parseUrl(dbUrl) {
@@ -37,16 +37,16 @@
         connection: {
           kind: 'postgresql',
           url,
-          cpus: cpus ? parseInt(cpus) : undefined,
-          memory_bytes: memory_bytes ? parseInt(memory_bytes) : undefined,
+          cpus: cpus ? parseFloat(cpus) : undefined,
+          memory_gb: memory_gb ? parseFloat(memory_gb) : undefined,
           storage_type: storage_type || undefined
         }
       });
       name = '';
       url = '';
       cpus = '';
-      memory_bytes = '';
-      storage_type = '';
+      memory_gb = '';
+      storage_type = 'ssd';
       error = '';
     } catch (e) {
       error = 'Invalid database URL';
@@ -76,15 +76,20 @@
   </div>
   <div class="form-group">
     <label>Available CPUs</label>
-    <input type="number" bind:value={cpus} min="1" placeholder="e.g., 4" />
+    <input type="number" bind:value={cpus} min="0" step="0.1" placeholder="e.g., 4" />
   </div>
   <div class="form-group">
-    <label>Available Memory (bytes)</label>
-    <input type="number" bind:value={memory_bytes} min="0" placeholder="e.g., 1073741824" />
+    <label>Available Memory (GB)</label>
+    <input type="number" bind:value={memory_gb} min="0" step="0.1" placeholder="e.g., 16" />
   </div>
   <div class="form-group">
     <label>Storage Type</label>
-    <input type="text" bind:value={storage_type} placeholder="e.g., SSD" />
+    <select bind:value={storage_type}>
+      <option value="ssd">SSD</option>
+      <option value="hdd">HDD</option>
+      <option value="san">SAN</option>
+      <option value="other">Other</option>
+    </select>
   </div>
   {#if error}
     <div class="error">{error}</div>
@@ -120,6 +125,15 @@
   }
 
   input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--dark-border);
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    width: 100%;
+  }
+
+  select {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid var(--dark-border);

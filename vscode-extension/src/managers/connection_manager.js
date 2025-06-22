@@ -70,7 +70,7 @@ class ConnectionManager {
       options,
       system: connectionDetails.system || {
         cpus: connectionDetails.cpus,
-        memory_bytes: connectionDetails.memory_bytes,
+        memory_gb: connectionDetails.memory_gb,
         storage_type: connectionDetails.storage_type
       }
     };
