@@ -1,5 +1,4 @@
 const BaseCommand = require('./BaseCommand');
-const DatabaseManagerFactory = require('../dbclients/database_manager_factory');
 const { ConnectionManager } = require('../managers/connection_manager');
 const logger = require('../utils/logger');
 
@@ -17,8 +16,19 @@ class ListChecksCommand extends BaseCommand {
         throw new Error(`Failed to get connection details for: ${connectionName}`);
       }
 
-      const databaseManager = DatabaseManagerFactory.create(connectionDetails);
-      const checks = databaseManager.listChecks();
+      // Load check definitions for this database kind
+      switch (connectionDetails.kind) {
+        case 'postgres':
+        case 'postgresql':
+          require('../checks/postgres');
+          connectionDetails.kind = 'postgresql';
+          break;
+        default:
+          throw new Error(`Unsupported database kind: ${connectionDetails.kind}`);
+      }
+
+      const { listCheckIds } = require('../utils/check_registry');
+      const checks = listCheckIds(connectionDetails.kind);
 
       webview.postMessage({
         type: 'checks',

@@ -19,7 +19,7 @@ class ListInsightsCommand extends BaseCommand {
       }
 
       const databaseManager = DatabaseManagerFactory.create(connectionDetails);
-      const insightsManager = new InsightsManager(databaseManager, this.context);
+      const insightsManager = new InsightsManager(databaseManager);
       const insights = await insightsManager.getInsights();
       
       webview.postMessage({

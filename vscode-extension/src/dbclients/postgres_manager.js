@@ -219,29 +219,6 @@ class PostgresManager extends DatabaseManager {
         });
       }
       
-      // Get all available checks and run their validate methods
-      const checks = this.getAvailableChecks();
-      for (const check of checks) {
-        try {
-          const validationInsights = await check.validate();
-          insights.push(...validationInsights);
-        } catch (error) {
-          console.error(`Error validating check ${check.constructor.name}:`, error);
-          insights.push({
-            kind: 'check-validation-failed',
-            severity_level: 5,
-            location: 'system',
-            resolution: null,
-            title: `${check.constructor.name} Validation Failed`,
-            context: {
-              error: error.message,
-              status: 'failed',
-              impact: 'critical',
-              description: `Error validating check: ${error.message}`
-            }
-          });
-        }
-      }
     } catch (error) {
       insights.push({
         kind: 'prerequisites-failure',
@@ -258,78 +235,6 @@ class PostgresManager extends DatabaseManager {
       });
     }
     return { insights };
-  }
-
-  /**
-   * Get available checks
-   * @returns {Array<BaseCheck>} Array of check instances
-   */
-  getAvailableChecks(ids = null) {
-    const { getChecks } = require('../utils/check_registry');
-    const checkClasses = getChecks(this.kind, ids);
-    return checkClasses.map(Check => new Check(this));
-  }
-
-  listChecks() {
-    const { listCheckIds } = require('../utils/check_registry');
-    return listCheckIds(this.kind);
-  }
-
-  /**
-   * Execute checks
-   * @param {Array<BaseCheck>} checks - Array of check instances
-   * @returns {Promise<Object>} Check result
-   */
-  async executeChecks(checks) {
-    const allInsights = [];
-    let currentContext = {
-      capabilities: {}
-    };
-
-    for (const check of checks) {
-      try {
-        // First check if the check can run
-        const validationInsights = await check.validate(currentContext);
-
-        const hasCriticalIssues = validationInsights.some(insight => insight.severity_level === 5);
-        if (hasCriticalIssues) {
-          allInsights.push(...validationInsights);
-          if (check.shouldBlock()) {
-            break;
-          }
-          continue;
-        }
-
-        // If the check can run, execute it
-        const insights = await check.generateInsights(currentContext);
-        if (insights) {
-          allInsights.push(...insights);
-        }
-        if (check.shouldBlock()) {
-          break;
-        }
-      } catch (error) {
-        console.error(`Error executing check ${check.constructor.name}:`, error);
-        allInsights.push({
-          kind: 'check-failed',
-          severity_level: 5,
-          location: 'system',
-          resolution: null,
-          title: `${check.constructor.name} Failed`,
-          context: {
-            error: error.message,
-            status: 'failed',
-            impact: 'critical',
-            description: `Error executing check: ${error.message}`
-          }
-        });
-      }
-    }
-
-    return {
-      context: currentContext,
-      insights: allInsights
-    };
   }
 
   /**
