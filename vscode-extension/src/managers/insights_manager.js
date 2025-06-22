@@ -39,9 +39,6 @@ class InsightsManager {
         if (insights) {
           allInsights.push(...insights);
         }
-        if (check.shouldBlock()) {
-          break;
-        }
       } catch (error) {
         console.error(`Error executing check ${check.constructor.name}:`, error);
         allInsights.push({
