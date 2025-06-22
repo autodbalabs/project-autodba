@@ -3,11 +3,6 @@ const {
   parseConnectionUrl,
   sanitizeConnectionUrl
 } = require('../utils/connection_url');
-const {
-  getCpuCount,
-  getTotalMemoryBytes,
-  detectStorageType
-} = require('../utils/system_info');
 
 /**
  * Manages database connections and their storage
@@ -73,10 +68,10 @@ class ConnectionManager {
       kind: connectionDetails.kind,
       url,
       options,
-      system: {
-        cpus: getCpuCount(),
-        memory_bytes: getTotalMemoryBytes(),
-        storage_type: detectStorageType()
+      system: connectionDetails.system || {
+        cpus: connectionDetails.cpus,
+        memory_bytes: connectionDetails.memory_bytes,
+        storage_type: connectionDetails.storage_type
       }
     };
 
