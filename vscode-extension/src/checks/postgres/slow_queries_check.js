@@ -6,51 +6,7 @@ const { getSeverityLevel } = require('../../utils/severity');
  */
 class SlowQueriesCheck extends BaseCheck {
   static id = 'slow-queries';
-  /**
-   * Validate if the check can be performed
-   * @param {Object} context - Context from previous checks
-   * @returns {Promise<Array<Object>>} Array of validation insights
-   */
-  async validate(context = {}) {
-    const insights = [];
-    try {
-      // Check if pg_stat_statements extension is enabled
-      const result = await this.databaseManager.executeQuery(`
-        SELECT * FROM pg_extension WHERE extname = 'pg_stat_statements'
-      `);
-      
-      if (result.rows.length === 0) {
-        insights.push({
-          kind: 'missing-extension',
-          severity_level: 5,
-          location: 'database',
-          resolution: 'CREATE EXTENSION IF NOT EXISTS pg_stat_statements;',
-          title: 'pg_stat_statements Extension Missing',
-          context: {
-            extension: 'pg_stat_statements',
-            status: 'missing',
-            impact: 'critical',
-            description: 'The pg_stat_statements extension is not enabled. This extension is required for query performance analysis.'
-          }
-        });
-      }
-    } catch (error) {
-      insights.push({
-        kind: 'slow-query-analysis-failure',
-        severity_level: 5,
-        location: 'database',
-        resolution: null,
-        title: 'Slow Queries Analysis Cannot Run',
-        context: {
-          reason: `Cannot analyze slow queries: ${error.message || error.code}`,
-          status: 'failed',
-          impact: 'critical',
-          description: `Cannot analyze slow queries: ${error.message}`
-        }
-      });
-    }
-    return insights;
-  }
+  static weight = 30;
 
   _extractTables(query) {
     // Simple regex to extract table names from SQL
@@ -125,6 +81,45 @@ class SlowQueriesCheck extends BaseCheck {
    */
   async generateInsights(context = {}) {
     const insights = [];
+
+    try {
+      const result = await this.databaseManager.executeQuery(
+        `SELECT * FROM pg_extension WHERE extname = 'pg_stat_statements'`
+      );
+
+      if (result.rows.length === 0) {
+        insights.push({
+          kind: 'missing-extension',
+          severity_level: 5,
+          location: 'database',
+          resolution: 'CREATE EXTENSION IF NOT EXISTS pg_stat_statements;',
+          title: 'pg_stat_statements Extension Missing',
+          context: {
+            extension: 'pg_stat_statements',
+            status: 'missing',
+            impact: 'critical',
+            description:
+              'The pg_stat_statements extension is not enabled. This extension is required for query performance analysis.'
+          }
+        });
+        return insights;
+      }
+    } catch (error) {
+      insights.push({
+        kind: 'slow-query-analysis-failure',
+        severity_level: 5,
+        location: 'database',
+        resolution: null,
+        title: 'Slow Queries Analysis Cannot Run',
+        context: {
+          reason: `Cannot analyze slow queries: ${error.message || error.code}`,
+          status: 'failed',
+          impact: 'critical',
+          description: `Cannot analyze slow queries: ${error.message}`
+        }
+      });
+      return insights;
+    }
 
     try {
       // Get slow queries

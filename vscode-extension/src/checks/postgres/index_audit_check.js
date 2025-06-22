@@ -5,18 +5,20 @@ const BaseCheck = require('../../checks/base_check');
  */
 class IndexAuditCheck extends BaseCheck {
   static id = 'index-audit';
+  static weight = 20;
+
   /**
-   * Validate if the check can be performed
+   * Generate insights based on the check
    * @param {Object} context - Context from previous checks
-   * @returns {Promise<Array<Object>>} Array of validation insights
+   * @returns {Promise<Array<Object>>} Array of generated insights
    */
-  async validate(context = {}) {
+  async generateInsights(context = {}) {
     const insights = [];
+
     try {
-      // Check if we can access index information
       await this.databaseManager.executeQuery(`
-        SELECT 1 
-        FROM pg_indexes 
+        SELECT 1
+        FROM pg_indexes
         LIMIT 1
       `);
     } catch (error) {
@@ -32,22 +34,13 @@ class IndexAuditCheck extends BaseCheck {
           impact: 'critical'
         }
       });
+      return insights;
     }
-    return insights;
-  }
-
-  /**
-   * Generate insights based on the check
-   * @param {Object} context - Context from previous checks
-   * @returns {Promise<Array<Object>>} Array of generated insights
-   */
-  async generateInsights(context = {}) {
-    const insights = [];
 
     try {
       // Find unused indexes
       const unusedIndexes = await this.databaseManager.executeQuery(`
-        SELECT 
+        SELECT
           ui.schemaname,
           ui.relname,
           ui.indexrelname,

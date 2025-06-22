@@ -44,20 +44,10 @@ class DatabaseManager {
   }
 
   /**
-   * Get available checks
-   * @returns {Array<BaseCheck>} Array of check instances
+   * Close the database connection
    */
-  getAvailableChecks() {
-    throw new Error('getAvailableChecks() must be implemented by subclass');
-  }
-
-  /**
-   * Execute checks
-   * @param {Array<BaseCheck>} checks - Array of check instances
-   * @returns {Promise<Object>} Check result
-   */
-  executeChecks(checks) {
-    throw new Error('executeChecks() must be implemented by subclass');
+  async close() {
+    // Optional for subclasses to implement
   }
 }
 

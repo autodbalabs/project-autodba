@@ -1,3 +1,4 @@
+// registry maps kind -> identifier -> Map<id, CheckClass>
 const registry = new Map();
 
 /**
@@ -7,44 +8,44 @@ const registry = new Map();
  * @param {string} kind
  * @param {Function} CheckClass
  */
-function registerCheck(kind, CheckClass) {
+function registerCheck(kind, identifier, CheckClass) {
   const id = CheckClass.id || CheckClass.name;
   if (!registry.has(kind)) {
     registry.set(kind, new Map());
   }
-  registry.get(kind).set(id, CheckClass);
-}
-
-/**
- * Get check classes for a kind. When an array of ids is supplied only those
- * checks will be returned.
- *
- * @param {string} kind
- * @param {Array<string>} [ids]
- * @returns {Array<Function>}
- */
-function getChecks(kind, ids = null) {
-  const checks = registry.get(kind) || new Map();
-  if (!ids) {
-    return Array.from(checks.values());
+  const kindMap = registry.get(kind);
+  if (!kindMap.has(identifier)) {
+    kindMap.set(identifier, new Map());
   }
-  return ids
-    .map(id => checks.get(id))
-    .filter(Boolean);
+  kindMap.get(identifier).set(id, CheckClass);
 }
 
 /**
- * List available check identifiers for a given kind.
- *
- * @param {string} kind
- * @returns {Array<string>}
- */
-function listCheckIds(kind) {
-  return Array.from((registry.get(kind) || new Map()).keys());
+ * Get check classes for a kind and optional identifier.
+ * When identifier is provided only checks registered for that identifier
+ * will be returned.
+*
+* @param {string} kind
+* @param {string} [identifier]
+* @returns {Array<Function>}
+*/
+function getChecks(kind, identifier = null) {
+  const kindMap = registry.get(kind);
+  if (!kindMap) return [];
+
+  if (identifier) {
+    const checks = kindMap.get(identifier);
+    return checks ? Array.from(checks.values()) : [];
+  }
+
+  let result = [];
+  for (const checks of kindMap.values()) {
+    result = result.concat(Array.from(checks.values()));
+  }
+  return result;
 }
 
 module.exports = {
   registerCheck,
-  getChecks,
-  listCheckIds
+  getChecks
 };
