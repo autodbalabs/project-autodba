@@ -3,7 +3,6 @@ const ListConnectionsCommand = require('./ListConnectionsCommand');
 const DeleteConnectionCommand = require('./DeleteConnectionCommand');
 const ListInsightsCommand = require('./ListInsightsCommand');
 const GetConnectionCommand = require('./GetConnectionCommand');
-const ListChecksCommand = require('./ListChecksCommand');
 const logger = require('../utils/logger');
 
 class CommandFactory {
@@ -15,8 +14,7 @@ class CommandFactory {
       'connections:list': ListConnectionsCommand,
       'connections:delete': DeleteConnectionCommand,
       'connections:get': GetConnectionCommand,
-      'insights:list': ListInsightsCommand,
-      'checks:list': ListChecksCommand
+      'insights:list': ListInsightsCommand
     };
     logger.log('CommandFactory initialized with commands:', Object.keys(this._commands));
   }
