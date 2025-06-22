@@ -16,6 +16,32 @@ function registerCheck(kind, CheckClass) {
 }
 
 /**
+ * Deregister a check for a specific database kind.
+ *
+ * @param {string} kind
+ * @param {Function} CheckClass
+ */
+function deregisterCheck(kind, CheckClass) {
+  const id = CheckClass.id || CheckClass.name;
+  const checks = registry.get(kind);
+  if (checks) {
+    checks.delete(id);
+    if (checks.size === 0) {
+      registry.delete(kind);
+    }
+  }
+}
+
+/**
+ * Remove all checks for the given kind.
+ *
+ * @param {string} kind
+ */
+function clearChecks(kind) {
+  registry.delete(kind);
+}
+
+/**
  * Get check classes for a kind. When an array of ids is supplied only those
  * checks will be returned.
  *
@@ -45,6 +71,8 @@ function listCheckIds(kind) {
 
 module.exports = {
   registerCheck,
+  deregisterCheck,
+  clearChecks,
   getChecks,
   listCheckIds
 };

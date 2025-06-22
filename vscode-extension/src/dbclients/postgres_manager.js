@@ -1,7 +1,6 @@
 const { Pool } = require('pg');
 const DatabaseManager = require('./database_manager');
-// Require check modules to ensure they register themselves with the registry
-require('../checks/postgres');
+const postgresChecks = require('../checks/postgres');
 const { parseConnectionUrl } = require('../utils/connection_url');
 /**
  * @typedef {Object} PostgresConnectionProps
@@ -21,6 +20,7 @@ class PostgresManager extends DatabaseManager {
     super(connectionDetails);
 
     this.pool = new Pool(this.resolveConnectionDetails(connectionDetails));
+    postgresChecks.registerChecks();
   }
 
   get kind() {
@@ -242,6 +242,7 @@ class PostgresManager extends DatabaseManager {
    */
   async close() {
     await this.pool.end();
+    postgresChecks.deregisterChecks();
   }
 }
 

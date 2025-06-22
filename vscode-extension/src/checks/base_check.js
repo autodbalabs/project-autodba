@@ -5,6 +5,7 @@
  * 2. Insight generation (generateInsights)
  */
 class BaseCheck {
+  static weight = 10;
   /**
    * Create a new check instance
    * @param {DatabaseManager} databaseManager - Database manager for executing queries

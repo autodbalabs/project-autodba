@@ -8,18 +8,20 @@ const os = require('os');
  */
 class ConfigSuggestionsCheck extends BaseCheck {
   static id = 'config-suggestions';
+  static weight = 40;
+
   /**
-   * Validate if the check can be performed
+   * Generate insights based on the check
    * @param {Object} context - Context from previous checks
-   * @returns {Promise<Array<Object>>} Array of validation insights
+   * @returns {Promise<Array<Object>>} Array of generated insights
    */
-  async validate(context = {}) {
+  async generateInsights(context = {}) {
     const insights = [];
+
     try {
-      // Check if we can access configuration
-      await this.databaseManager.executeQuery(`
-        SELECT 1 FROM pg_settings LIMIT 1
-      `);
+      await this.databaseManager.executeQuery(
+        `SELECT 1 FROM pg_settings LIMIT 1`
+      );
     } catch (error) {
       insights.push({
         kind: 'config-analysis-failure',
@@ -34,17 +36,8 @@ class ConfigSuggestionsCheck extends BaseCheck {
           description: `Cannot analyze configuration: ${error.message}`
         }
       });
+      return insights;
     }
-    return insights;
-  }
-
-  /**
-   * Generate insights based on the check
-   * @param {Object} context - Context from previous checks
-   * @returns {Promise<Array<Object>>} Array of generated insights
-   */
-  async generateInsights(context = {}) {
-    const insights = [];
 
     try {
       // Get current configuration

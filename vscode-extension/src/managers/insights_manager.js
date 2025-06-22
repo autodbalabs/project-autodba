@@ -18,29 +18,20 @@ class InsightsManager {
    * @returns {Promise<{context: Object, insights: Array<Object>}>}
    */
   async _executeChecks(checks) {
+    const ordered = checks.sort(
+      (a, b) => (a.constructor.weight || 0) - (b.constructor.weight || 0)
+    );
     const allInsights = [];
     let currentContext = { capabilities: {} };
 
-    for (const check of checks) {
+    for (const check of ordered) {
       try {
-        const validationInsights = await check.validate(currentContext);
-        const hasCritical = validationInsights.some(i => i.severity_level === 5);
-        if (validationInsights.length) {
-          allInsights.push(...validationInsights);
-        }
-        if (hasCritical) {
-          if (check.shouldBlock()) {
-            break;
-          }
-          continue;
-        }
-
         const insights = await check.generateInsights(currentContext);
         if (insights) {
           allInsights.push(...insights);
-        }
-      } catch (error) {
-        console.error(`Error executing check ${check.constructor.name}:`, error);
+          if (check.shouldBlock() && insights.some(i => i.severity_level === 5)) {
+            break;
+          }
         allInsights.push({
           kind: 'check-failed',
           severity_level: 5,

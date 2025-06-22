@@ -43,6 +43,12 @@ class DatabaseManager {
     throw new Error('checkPrerequisites() must be implemented by subclass');
   }
 
+  /**
+   * Close the database connection
+   */
+  async close() {
+    // Optional for subclasses to implement
+  }
 }
 
 module.exports = DatabaseManager;

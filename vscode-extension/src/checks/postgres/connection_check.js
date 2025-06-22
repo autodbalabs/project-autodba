@@ -5,11 +5,13 @@ const BaseCheck = require('../../checks/base_check');
  * This check is marked as blocking so other checks are skipped when it fails.
  */
 class ConnectionCheck extends BaseCheck {
+  static weight = 1;
+
   constructor(databaseManager) {
     super(databaseManager, { blocking: true });
   }
 
-  async validate() {
+  async generateInsights() {
     const insights = [];
     try {
       await this.databaseManager.executeQuery('SELECT 1');
@@ -28,11 +30,6 @@ class ConnectionCheck extends BaseCheck {
       });
     }
     return insights;
-  }
-
-  async generateInsights() {
-    // This check only validates connectivity and does not generate insights
-    return [];
   }
 }
 

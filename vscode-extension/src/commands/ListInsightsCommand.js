@@ -6,6 +6,7 @@ const logger = require('../utils/logger');
 
 class ListInsightsCommand extends BaseCommand {
   async execute(message, webview) {
+    let databaseManager;
     try {
       const connectionName = message.connection;
       if (!connectionName) {
@@ -18,7 +19,7 @@ class ListInsightsCommand extends BaseCommand {
         throw new Error(`Failed to get connection details for: ${connectionName}`);
       }
 
-      const databaseManager = DatabaseManagerFactory.create(connectionDetails);
+      databaseManager = DatabaseManagerFactory.create(connectionDetails);
       const insightsManager = new InsightsManager(databaseManager);
       const insights = await insightsManager.getInsights();
       
@@ -32,6 +33,14 @@ class ListInsightsCommand extends BaseCommand {
         type: 'error',
         message: `Failed to get insights: ${error.message}`
       });
+    } finally {
+      if (databaseManager) {
+        try {
+          await databaseManager.close();
+        } catch (e) {
+          logger.log('Error closing database manager:', e);
+        }
+      }
     }
   }
 }
