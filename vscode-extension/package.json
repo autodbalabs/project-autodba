@@ -51,9 +51,9 @@
     "vscode:prepublish": "npm run build",
     "build": "pushd webview ; bun run build ; popd",
     "watch": "pushd webview ; bun run watch ; popd",
-    "pretest": "npm run build && npm run lint",
-    "lint": "eslint src --ext js",
-    "test": "node ./dist/test/runTest.js",
+    "pretest": "npm run lint",
+    "lint": "eslint src --ext js test --ext js",
+    "test": "mocha",
     "package": "vsce package --baseContentUrl=./vscode-extension",
     "publish:patch": "vsce publish patch",
     "publish:minor": "vsce publish minor",
@@ -69,6 +69,9 @@
   },
   "devDependencies": {
     "@vscode/vsce": "^3.3.2",
-    "eslint": "^9.25.0"
+    "eslint": "^9.25.0",
+    "mocha": "^10.3.0",
+    "chai": "^4.3.8",
+    "sinon": "^17.0.1"
   }
 }
