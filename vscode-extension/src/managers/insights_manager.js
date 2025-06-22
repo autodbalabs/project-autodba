@@ -32,19 +32,23 @@ class InsightsManager {
           if (check.shouldBlock() && insights.some(i => i.severity_level === 5)) {
             break;
           }
-        allInsights.push({
-          kind: 'check-failed',
-          severity_level: 5,
-          location: 'system',
-          resolution: null,
-          title: `${check.constructor.name} Failed`,
-          context: {
-            error: error.message,
-            status: 'failed',
-            impact: 'critical',
-            description: `Error executing check: ${error.message}`
-          }
-        });
+          allInsights.push({
+            kind: 'check-failed',
+            severity_level: 5,
+            location: 'system',
+            resolution: null,
+            title: `${check.constructor.name} Failed`,
+            context: {
+              error: error.message,
+              status: 'failed',
+              impact: 'critical',
+              description: `Error executing check: ${error.message}`
+            }
+          });
+        }
+      } catch (error) {
+        console.error(`Error executing check ${check.constructor.name}:`, error);
+        // Continue with next check even if one fails
       }
     }
 
