@@ -37,4 +37,4 @@ class SaveConnectionCommand extends BaseCommand {
   }
 }
 
-module.exports = SaveConnectionCommand; 
+module.exports = SaveConnectionCommand;

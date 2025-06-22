@@ -5,6 +5,9 @@
 
   let name = '';
   let url = '';
+  let cpus = '';
+  let memory_bytes = '';
+  let storage_type = '';
   let error = '';
 
   function parseUrl(dbUrl) {
@@ -33,11 +36,17 @@
         name: name || parsed.dbname || parsed.host,
         connection: {
           kind: 'postgresql',
-          url
+          url,
+          cpus: cpus ? parseInt(cpus) : undefined,
+          memory_bytes: memory_bytes ? parseInt(memory_bytes) : undefined,
+          storage_type: storage_type || undefined
         }
       });
       name = '';
       url = '';
+      cpus = '';
+      memory_bytes = '';
+      storage_type = '';
       error = '';
     } catch (e) {
       error = 'Invalid database URL';
@@ -64,6 +73,18 @@
   <div class="form-group">
     <label>Database URL</label>
     <input type="text" bind:value={url} placeholder="postgres://user:pass@host:port/db" required />
+  </div>
+  <div class="form-group">
+    <label>Available CPUs</label>
+    <input type="number" bind:value={cpus} min="1" placeholder="e.g., 4" />
+  </div>
+  <div class="form-group">
+    <label>Available Memory (bytes)</label>
+    <input type="number" bind:value={memory_bytes} min="0" placeholder="e.g., 1073741824" />
+  </div>
+  <div class="form-group">
+    <label>Storage Type</label>
+    <input type="text" bind:value={storage_type} placeholder="e.g., SSD" />
   </div>
   {#if error}
     <div class="error">{error}</div>
