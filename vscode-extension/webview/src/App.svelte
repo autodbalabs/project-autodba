@@ -101,6 +101,9 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
             >
           </li>
         </ol>
+        <p class="highlight-note security-note">
+          AutoDBA runs entirely on your machine. Database credentials are stored locally using VS Code's Secret Storage, and the extension sends no credentials or usage data anywhere.
+        </p>
       </div>
     {/if}
   </div>
