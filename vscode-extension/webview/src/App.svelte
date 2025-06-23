@@ -50,7 +50,16 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
 
 <main>
   <div class="container">
-    <h1>AutoDBA: PostgreSQL Insights (Alpha)</h1>
+    <header class="page-header">
+      <h1>AutoDBA: PostgreSQL Insights (Alpha)</h1>
+      <a
+        class="discord-link"
+        href="https://discord.gg/wbB8Pdb3nm"
+        target="_blank"
+        rel="noopener"
+        >Need help? Join our Discord</a
+      >
+    </header>
 
     <div class="connection-controls">
       {#if addingConnection}
@@ -78,6 +87,21 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
 
     {#if selectedConnection}
       <Insights connection={selectedConnection} />
+    {:else}
+      <div class="empty-state no-connection">
+        <ol class="empty-steps">
+          <li>Create a connection</li>
+          <li>Select a connection</li>
+          <li>
+            <a
+              href="https://discord.gg/wbB8Pdb3nm"
+              target="_blank"
+              rel="noopener"
+              >Join our Discord community</a
+            >
+          </li>
+        </ol>
+      </div>
     {/if}
   </div>
 </main>
@@ -96,6 +120,22 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
     display: flex;
     flex-direction: column;
     gap: 24px;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  a.discord-link {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+
+  a.discord-link:hover {
+    text-decoration: underline;
   }
 
   h1 {
@@ -129,5 +169,24 @@ import ConnectionUrlForm from './components/connections/ConnectionUrlForm.svelte
 
   .delete-btn {
     width: fit-content;
+  }
+
+  .no-connection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--dark-bg-alt);
+    border: 1px solid var(--dark-border);
+    border-radius: 8px;
+  }
+
+  .empty-steps {
+    list-style: decimal inside;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
   }
 </style>
