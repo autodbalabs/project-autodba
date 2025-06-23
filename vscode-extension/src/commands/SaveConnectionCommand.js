@@ -1,10 +1,14 @@
 const vscode = require('vscode');
 const BaseCommand = require('./BaseCommand');
 const { ConnectionManager } = require('../managers/connection_manager');
+const DatabaseManagerFactory = require('../dbclients/database_manager_factory');
 
 class SaveConnectionCommand extends BaseCommand {
   async execute(message, webview) {
     try {
+      // Test connection before saving
+      await DatabaseManagerFactory.testConnection(message.connection);
+
       const connectionManager = new ConnectionManager(this.context);
       await connectionManager.addConnection(message.name, message.connection);
 
@@ -25,4 +29,4 @@ class SaveConnectionCommand extends BaseCommand {
   }
 }
 
-module.exports = SaveConnectionCommand; 
+module.exports = SaveConnectionCommand;

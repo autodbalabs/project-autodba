@@ -23,6 +23,24 @@ class DatabaseManagerFactory {
         throw new Error(`Unsupported database kind: ${connectionDetails.kind}`);
     }
   }
+
+  /**
+   * Test that a connection can be established.
+   * This creates a temporary manager, runs a simple query,
+   * then closes the manager.
+   * @param {Object} connectionDetails
+   * @returns {Promise<void>}
+   */
+  static async testConnection(connectionDetails) {
+    const manager = DatabaseManagerFactory.create(connectionDetails);
+    try {
+      await manager.executeQuery('SELECT 1');
+    } finally {
+      if (typeof manager.close === 'function') {
+        await manager.close();
+      }
+    }
+  }
 }
 
 module.exports = DatabaseManagerFactory;

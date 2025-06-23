@@ -67,7 +67,12 @@ class ConnectionManager {
     const nonSensitiveDetails = {
       kind: connectionDetails.kind,
       url,
-      options
+      options,
+      system: connectionDetails.system || {
+        cpus: connectionDetails.cpus,
+        memory_gb: connectionDetails.memory_gb,
+        storage_type: connectionDetails.storage_type
+      }
     };
 
     await this.db.read();

@@ -5,6 +5,10 @@
 
   let name = '';
   let url = '';
+  // Default hardware values
+  let cpus = '1';
+  let memory_gb = '1';
+  let storage_type = 'ssd';
   let error = '';
 
   function parseUrl(dbUrl) {
@@ -33,11 +37,17 @@
         name: name || parsed.dbname || parsed.host,
         connection: {
           kind: 'postgresql',
-          url
+          url,
+          cpus: parseFloat(cpus),
+          memory_gb: parseFloat(memory_gb),
+          storage_type: storage_type || undefined
         }
       });
       name = '';
       url = '';
+      cpus = '1';
+      memory_gb = '1';
+      storage_type = 'ssd';
       error = '';
     } catch (e) {
       error = 'Invalid database URL';
@@ -64,6 +74,23 @@
   <div class="form-group">
     <label>Database URL</label>
     <input type="text" bind:value={url} placeholder="postgres://user:pass@host:port/db" required />
+  </div>
+  <div class="form-group">
+    <label>Available CPUs</label>
+    <input type="number" bind:value={cpus} min="0" step="0.1" required placeholder="e.g., 4" />
+  </div>
+  <div class="form-group">
+    <label>Available Memory (GB)</label>
+    <input type="number" bind:value={memory_gb} min="0" step="0.1" required placeholder="e.g., 16" />
+  </div>
+  <div class="form-group">
+    <label>Storage Type</label>
+    <select bind:value={storage_type} required>
+      <option value="ssd">SSD</option>
+      <option value="hdd">HDD</option>
+      <option value="san">SAN</option>
+      <option value="other">Other</option>
+    </select>
   </div>
   {#if error}
     <div class="error">{error}</div>
@@ -99,6 +126,15 @@
   }
 
   input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--dark-border);
+    background: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    width: 100%;
+  }
+
+  select {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid var(--dark-border);
