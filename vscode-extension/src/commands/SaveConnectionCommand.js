@@ -7,15 +7,7 @@ class SaveConnectionCommand extends BaseCommand {
   async execute(message, webview) {
     try {
       // Test connection before saving
-      let tempManager;
-      try {
-        tempManager = DatabaseManagerFactory.create(message.connection);
-        await tempManager.executeQuery('SELECT 1');
-      } finally {
-        if (tempManager && typeof tempManager.close === 'function') {
-          await tempManager.close();
-        }
-      }
+      await DatabaseManagerFactory.testConnection(message.connection);
 
       const connectionManager = new ConnectionManager(this.context);
       await connectionManager.addConnection(message.name, message.connection);
