@@ -19,11 +19,23 @@ class SaveConnectionCommand extends BaseCommand {
         name: message.name
       });
     } catch (error) {
-      vscode.window.showErrorMessage(`Failed to save connection: ${error.message}`);
+      console.error('Failed to save connection:', error.code);
+
+      if (error.code === 'ECONNREFUSED') {
+        vscode.window.showErrorMessage('Failed to save connection: Connection refused', {
+          modal: true,
+          detail: error.detail || error.message || error.code
+        });
+      } else {
+        vscode.window.showErrorMessage(`Failed to save connection: ${error.message || error.code}`, {
+          modal: true,
+          detail: error.detail || error.message || error.code
+        });
+      }
 
       webview.postMessage({
         type: 'error',
-        message: `Failed to save connection: ${error.message}`
+        message: `Failed to save connection: ${error.message || error.code}`
       });
     }
   }
