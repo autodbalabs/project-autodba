@@ -5,8 +5,9 @@
 
   let name = '';
   let url = '';
-  let cpus = '';
-  let memory_gb = '';
+  // Default hardware values
+  let cpus = '1';
+  let memory_gb = '1';
   let storage_type = 'ssd';
   let error = '';
 
@@ -37,15 +38,15 @@
         connection: {
           kind: 'postgresql',
           url,
-          cpus: cpus ? parseFloat(cpus) : undefined,
-          memory_gb: memory_gb ? parseFloat(memory_gb) : undefined,
+          cpus: parseFloat(cpus),
+          memory_gb: parseFloat(memory_gb),
           storage_type: storage_type || undefined
         }
       });
       name = '';
       url = '';
-      cpus = '';
-      memory_gb = '';
+      cpus = '1';
+      memory_gb = '1';
       storage_type = 'ssd';
       error = '';
     } catch (e) {
@@ -76,15 +77,15 @@
   </div>
   <div class="form-group">
     <label>Available CPUs</label>
-    <input type="number" bind:value={cpus} min="0" step="0.1" placeholder="e.g., 4" />
+    <input type="number" bind:value={cpus} min="0" step="0.1" required placeholder="e.g., 4" />
   </div>
   <div class="form-group">
     <label>Available Memory (GB)</label>
-    <input type="number" bind:value={memory_gb} min="0" step="0.1" placeholder="e.g., 16" />
+    <input type="number" bind:value={memory_gb} min="0" step="0.1" required placeholder="e.g., 16" />
   </div>
   <div class="form-group">
     <label>Storage Type</label>
-    <select bind:value={storage_type}>
+    <select bind:value={storage_type} required>
       <option value="ssd">SSD</option>
       <option value="hdd">HDD</option>
       <option value="san">SAN</option>
