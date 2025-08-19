@@ -2,7 +2,7 @@
   "name": "autodba-postgresql-insights",
   "displayName": "AutoDBA: Local AI for PostgreSQL Performance",
   "description": "Find slow queries, index bloat/usage, and config drift in PostgreSQL-AI-guided suggestions, all inside VS Code.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "autodba-labs",
   "icon": "media/AutoDBA-Avatar-128x128.png",
   "repository": {
